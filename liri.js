@@ -14,7 +14,6 @@ var textFile = process.argv[3];
 
 //commands my-tweets, spotify-this-song, movie-this, do-what-it-says
 
-
 if (process.argv[2] === "spotify-this-song") {
 	spotify
 	  .search({ 
