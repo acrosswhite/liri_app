@@ -6,8 +6,6 @@ var song = process.argv[3];
 var Twitter = require('twitter');
 var client = new Twitter(keys.twitterKeys);
 var params = {screen_name: 'ash_crosswhite'};
-var movieName = encodeURIComponent(process.argv[3]);
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
 var request = require("request");
 var fs = require("fs");
 var textFile = process.argv[3];
@@ -15,6 +13,9 @@ var textFile = process.argv[3];
 //commands my-tweets, spotify-this-song, movie-this, do-what-it-says
 
 if (process.argv[2] === "spotify-this-song") {
+	if (song === undefined) {
+		song = "The Sign Ace Of Base";
+	}
 	spotify
 	  .search({ 
 	  	type: 'track', 
@@ -25,21 +26,24 @@ if (process.argv[2] === "spotify-this-song") {
 	  	}
 	    else {
 	    	var songInfo = response.tracks.items[0];
-	    	console.log(songInfo.name);
-	    	console.log(songInfo.artists[0].name);
-	    	console.log(songInfo.album.name);
-	    	console.log(songInfo.preview_url);
+	    	console.log("Name: " + songInfo.name);
+	    	console.log("Artist: " + songInfo.artists[0].name);
+	    	console.log("Song Info: " + songInfo.album.name);
+	    	console.log("URL: " + songInfo.preview_url);
 	    	
 	    }
 	  })
+
 	  )
  }
  else if (process.argv[2] === "my-tweets"){
 
 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
 	  if (!error) {
-	  	for (var i = 0; i < 20; i++) {
-	    console.log(tweets[i]);
+	  	console.log("found " + tweets.length + " tweets");
+	  	for (var i = 0; i < Math.min(tweets.length, 20); i++) {
+	  	console.log("Created: " + tweets[i].created_at);
+	    console.log("Text: " + tweets[i].text);
 		}
 	  }
 	  else {
@@ -48,23 +52,30 @@ if (process.argv[2] === "spotify-this-song") {
 	});
 }
 else if (process.argv[2] === "movie-this"){
-
+	var movieName = process.argv[3];
 	// This line is just to help us debug against the actual URL.
-	console.log(queryUrl);
+	//console.log(queryUrl);
+
+	if (movieName === undefined){
+		movieName = "Mr Nobody";
+	}
+
+	var queryUrl = "http://www.omdbapi.com/?t=" + encodeURIComponent(movieName) + "&y=&plot=short&apikey=40e9cece";
+	//console.log(queryUrl);
 
 
 	request(queryUrl, function(error, response, body) {
 		if (!error && response.statusCode === 200){
 
 			//console.log(JSON.parse(body));
-			console.log(JSON.parse(body).Title);
-			console.log(JSON.parse(body).Year);
+			console.log("Title: " + JSON.parse(body).Title);
+			console.log("Year: " + JSON.parse(body).Year);
 			console.log("IMDB: " + JSON.parse(body).imdbRating);
 			console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
-			console.log(JSON.parse(body).Country);
-			console.log(JSON.parse(body).Language);
-			console.log(JSON.parse(body).Plot);
-			console.log(JSON.parse(body).Actors);
+			console.log("Country: " + JSON.parse(body).Country);
+			console.log("Language: " + JSON.parse(body).Language);
+			console.log("Plot: " + JSON.parse(body).Plot);
+			console.log("Actors: " + JSON.parse(body).Actors);
 		}
 	});
 
