@@ -96,6 +96,7 @@ else if (process.argv[2] === "do-what-it-says"){
 	  console.log(dataArr);
 //need to update into function where you have argument for argv2 and command is argv 3
 //also look at switch statement
+
 	});
 }
 else {
