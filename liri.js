@@ -2,17 +2,17 @@ var keys = require("./keys.js");
 var spotify = require('node-spotify-api');
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotifyKeys);
-var song = process.argv[3];
 var Twitter = require('twitter');
 var client = new Twitter(keys.twitterKeys);
 var params = {screen_name: 'ash_crosswhite'};
 var request = require("request");
 var fs = require("fs");
-var textFile = process.argv[3];
+
 
 //commands my-tweets, spotify-this-song, movie-this, do-what-it-says
 function liri (argv2, argv3){
-	if (process.argv[2] === "spotify-this-song") {
+	if (argv2 === "spotify-this-song") {
+		var song = argv3;
 		if (song === undefined) {
 			song = "The Sign Ace Of Base";
 		}
@@ -36,7 +36,7 @@ function liri (argv2, argv3){
 
 		  )
 	 }
-	 else if (process.argv[2] === "my-tweets"){
+	 else if (argv2 === "my-tweets"){
 
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 		  if (!error) {
@@ -51,8 +51,8 @@ function liri (argv2, argv3){
 		  }
 		});
 	}
-	else if (process.argv[2] === "movie-this"){
-		var movieName = process.argv[3];
+	else if (argv2 === "movie-this"){
+		var movieName = argv3;
 		// This line is just to help us debug against the actual URL.
 		//console.log(queryUrl);
 
@@ -81,7 +81,7 @@ function liri (argv2, argv3){
 
 	}
 
-	else if (process.argv[2] === "do-what-it-says"){
+	else if (argv2 === "do-what-it-says"){
 		//fs node package to run text in random.txt
 		fs.readFile("random.txt", "utf8", function(error, data) {
 
@@ -89,13 +89,12 @@ function liri (argv2, argv3){
 		    return console.log(error);
 		  }
 
-		  console.log(data);
+		  //console.log(data);
 
 		  var dataArr = data.split(",");
 
-		  console.log(dataArr);
-	//need to update into function where you have argument for argv2 and command is argv 3
-	//also look at switch statement
+		  liri(dataArr[0], dataArr[1])
+
 
 		});
 	}
